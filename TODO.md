@@ -1,7 +1,10 @@
 # Colmap
 
-- CLI program that takes tabular data as input and maps a random
-  command to each input column. 
+CLI program that takes tabular data as input and maps a random
+command to each input column. It works in a similar way to `awk` or `xargs` in
+that the input text is converted into fields and the user supplied
+commands are executed on each matched column (field)
+
 
 ## Example
 
