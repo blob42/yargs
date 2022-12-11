@@ -30,7 +30,22 @@ WILL OUPUT:
 
 ebook.pdf  |   Title
 
+
+
+
+
+
+
+
+
+
+
 ---
 
 [I am using Github under protest](protest.md)
 
+
+TODO:
+----
+
+[ ] use non-dashed approach to cli (rwxrob/bonzai)

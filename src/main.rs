@@ -1,12 +1,14 @@
 /* TODO:
  * 1. add clap for CLI flags
- * 2. read input as column fields
+ * 2. read input as column field1920s
  * 3. test splitting input into fields
  * 4. execute arbitrary shell commands to manipulate input
  */
 
 use clap::{Parser};
 use std::process;
+
+mod input;
 
 
 #[derive(Parser)]
@@ -42,10 +44,11 @@ fn main() {
 
     // 1. parse cli parameters
     // 2. read from stdin
-    // 3. execute every field command on it's corresponding
-    // column
+    // 3. split stdin into columns (column/awk commands)
+    // 3. execute every field command on it's corresponding column
+    //    [ ] execute a command on first text column
     // 4. print resulting concatenated columns
-    
+
 
     if let None = cli.f1.as_deref() {
         eprintln!("no field --fX to operate on");
@@ -56,5 +59,7 @@ fn main() {
         println!("{:?}", cli.separator.unwrap());
         println!("{:?}", cli.f1.unwrap());
     }
+
+
 }
 
