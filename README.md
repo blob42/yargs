@@ -11,19 +11,20 @@ commands are executed on each matched column (field)
 INPUT:
 -----
 
-         field #1                 field #2
- |--------------------------|   |--------------|
-/long/path/to/some/ebook.pdf  | Title Of Ebook
-                                 \
-                                  \
-example usage:                     \
---------------                      \____________________
-                                                         \
-colmap --field-1='basename {}'  --field-2="awk { print $1 }"
-colmap -f1 'basename {}' -f2 'awk { print $1 }'
+             field #1                 field #2
+    |--------------------------|   |--------------|
+    /long/path/to/some/ebook.pdf   | Title Of Ebook
+                                     \
+                                      \
+    example usage:                     \
+    --------------                      \____________________
+                                                             \
+    colmap --field-1='basename {}'  --field-2="awk { print $1 }"
+    colmap -f1 'basename {}' -f2 'awk { print $1 }'
 
 - use colon as delimiter 
-colmap -d':'
+
+    colmap -d':'
 
 WILL OUPUT:
 ----------
@@ -41,7 +42,6 @@ ebook.pdf  |   Title
 
 
 ---
-
 [I am using Github under protest](protest.md)
 
 
