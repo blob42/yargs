@@ -14,11 +14,11 @@ INPUT:
              field #1                 field #2
     |--------------------------|   |--------------|
     /long/path/to/some/ebook.pdf   | Title Of Ebook
-                                     \
+                                     ____
                                       \
     example usage:                     \
-    --------------                      \____________________
-                                                             \
+    --------------                      \__________________
+                                                        ___\_
     colmap --field-1='basename {}'  --field-2="awk { print $1 }"
     colmap -f1 'basename {}' -f2 'awk { print $1 }'
 
@@ -30,7 +30,6 @@ WILL OUPUT:
 ----------
 
 ebook.pdf  |   Title
-
 
 
 
