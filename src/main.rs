@@ -1,8 +1,9 @@
 /* TODO:
- * 1. add clap for CLI flags
- * 2. read input as column field1920s
- * 3. test splitting input into fields
- * 4. execute arbitrary shell commands to manipulate input
+ * . add clap for CLI flags
+ * . read input as column field1920s
+ * . test splitting input into fields
+ * . execute arbitrary shell commands to manipulate input
+ * . dynamically generate field parameters ?
  */
 
 use clap::{Parser};
@@ -11,6 +12,10 @@ use std::process;
 mod input;
 
 
+
+/// # Parsing parameters
+///  . parsing x-args as field parameters (-f1 'x argument')
+///  . detecting number of columns and x-args from positional arguments
 #[derive(Parser)]
 #[command(name="colmap")]
 #[command(author="blob42")]
@@ -18,6 +23,7 @@ mod input;
 #[command(about = "execute commands on columns")]
 struct Cli {
 
+    /// separator character used to split text into columns
     #[arg(default_value=" ")]
     #[arg(short, long = "sep")]
     separator: Option<char>,

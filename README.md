@@ -1,15 +1,19 @@
+Very much work in progress. This is the first project in my Rust learning journey. 
+Expect a lot of changes and refactoring.
+
 # Colmap
 
-CLI program that takes tabular data as input and maps a random
-command to each input column. It works in a similar way to `awk` or `xargs` in
-that the input text is converted into fields and the user supplied
-commands are executed on each matched column (field)
+Colmap is hybrid between `awk` in `xargs`. It borrows from the former its ability
+to work on tabular columns of text and allows for arbitrary commands to be
+applied per column in a similar way to `xargs`.
+
+The columns are called `fields`. The command to execute on each field is called
+an `x-arg`. 
 
 
 ## Example
 
-INPUT:
------
+input:
 
              field #1                 field #2
     |--------------------------|   |--------------|
@@ -20,16 +24,33 @@ INPUT:
     --------------                      \__________________
                                                         ___\_
     colmap --field-1='basename {}'  --field-2="awk { print $1 }"
+                                              _________________|: x-arg
+
+    #OR
     colmap -f1 'basename {}' -f2 'awk { print $1 }'
+
+would output: `ebook.pdf  |   Title`
+
 
 - use colon as delimiter 
 
-    colmap -d':'
+`colmap -d':' -f1 '...'`
 
-WILL OUPUT:
-----------
+### Ways of passing x-args
 
-ebook.pdf  |   Title
+1. passing column x-args as fields
+
+```shell
+foo_cmd | colmap --field-1='basename {}'  --field-2="awk { print $1 }"
+foo_cmd | colmap -f1 'basename {}' -f2 'awk { print $1 }'
+```
+
+2. Passing an `xarg template`
+
+```shell
+foo_cmd | colmap -t 'basename {}' 'awk { print $2 }'
+```
+
 
 
 
