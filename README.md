@@ -53,14 +53,6 @@ foo_cmd | colmap -t 'basename {}' 'awk { print $2 }'
 
 
 
-
-
-
-
-
-
-
-
 ---
 [I am using Github under protest](protest.md)
 
@@ -68,4 +60,5 @@ foo_cmd | colmap -t 'basename {}' 'awk { print $2 }'
 TODO:
 ----
 
-[ ] use non-dashed approach to cli (rwxrob/bonzai)
+[ ] use golden tests
+[ ] use non-dashed cli like (rwxrob/bonzai)

@@ -6,7 +6,7 @@
  * . dynamically generate field parameters ?
  */
 
-use clap::{Parser};
+use clap::Parser;
 use std::process;
 
 mod input;
