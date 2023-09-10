@@ -5,8 +5,14 @@ use regex::Regex;
 use std::result;
 use std::ops::Index;
 use std::slice::SliceIndex;
+use crate::parsing::DEFAULT_SEP_PATTERN;
 
-pub const DEFAULT_SEP_PATTERN: &str = r"[\t]+";
+
+pub mod parsing {
+
+    pub const DEFAULT_SEP_PATTERN: &str = r"[\t]+";
+
+}
 
 
 type Column = Vec<String>;

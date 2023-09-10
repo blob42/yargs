@@ -7,7 +7,7 @@
  */
 
 use clap::Parser;
-use colmap::DEFAULT_SEP_PATTERN;
+use colmap::parsing::DEFAULT_SEP_PATTERN;
 
 #[derive(Parser)]
 /// colmap - map commands to columns of text input
@@ -22,8 +22,8 @@ use colmap::DEFAULT_SEP_PATTERN;
 struct Cli {
     /// separator character used to split text into columns
     #[arg(default_value_t=DEFAULT_SEP_PATTERN.to_owned())]
-    #[arg(short, long = "sep")]
-    separator: String,
+    #[arg(short)]
+    delimiter: String,
 
     #[arg(short, long, action = clap::ArgAction::Count)]
     debug: u8,
@@ -41,7 +41,7 @@ fn main() {
     // }
 
     if cli.debug > 0 {
-        println!("{:?}", cli.separator);
+        println!("{:?}", cli.delimiter);
     }
 
     for c in cli.commands {

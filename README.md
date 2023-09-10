@@ -19,12 +19,12 @@ input:
     |--------------------------|   |--------------|
     /long/path/to/some/ebook.pdf   | Title Of Ebook
                                      ____
-                                      \
-    example usage:                     \
-    --------------                      \__________________
-                                                        ___\_
-    colmap --field-1='basename {}'  --field-2="awk { print $1 }"
-                                              _________________|: x-arg
+                                       |
+    example usage:                     | x:arg
+    --------------                     |                     
+                          ----------------                       
+    colmap 'basename {}' "awk { print $1 }"
+                                                    
 
     #OR
     colmap -f1 'basename {}' -f2 'awk { print $1 }'
@@ -45,20 +45,14 @@ foo_cmd | colmap --field-1='basename {}'  --field-2="awk { print $1 }"
 foo_cmd | colmap -f1 'basename {}' -f2 'awk { print $1 }'
 ```
 
-2. Passing an `xarg template`
+2. Passing `xargs` as positional arguments
 
 ```shell
-foo_cmd | colmap -t 'basename {}' 'awk { print $2 }'
+foo_cmd | colmap 'basename {}' 'awk { print $2 }'
 ```
-
 
 
 ---
 [I am using Github under protest](protest.md)
 
 
-TODO:
-----
-
-[ ] use golden tests
-[ ] use non-dashed cli like (rwxrob/bonzai)
