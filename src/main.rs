@@ -7,16 +7,18 @@
  */
 
 use clap::Parser;
-use colmap::parsing::DEFAULT_SEP_PATTERN;
+use yargs::parsing::DEFAULT_SEP_PATTERN;
 
 #[derive(Parser)]
-/// colmap - map commands to columns of text input
+/// yargs - map commands to columns of text input
 ///
-/// The colmap command reads text from stdin as columns. Each column is then passed to a command
-/// specified by the user. Commands are mapped to specific columns using positional arguments.
+/// The yargs command maps commands to text columns, it works like `xargs` for tabular text. Input
+/// is parsed into columns then passed to commands specified by the user. Commands are mapped to
+/// specific columns using positional
+/// arguments.
 ///
 /// The first command is applied to the first column, the second command to the second column, etc.
-#[command(name="colmap")]
+#[command(name="yargs")]
 #[command(author="blob42")]
 #[command(version="0.1")]
 struct Cli {

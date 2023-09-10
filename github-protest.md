@@ -1,7 +1,7 @@
 ## I am Using GitHub Under Protest
 
 This project is currently hosted on my [personal
-forge](https://git.blob42.xyz/sp4ke/colmap) and mirrored on GitHub. This is not
+forge](https://git.blob42.xyz/sp4ke/yargs) and mirrored on GitHub. This is not
 ideal; GitHub is a proprietary, trade-secret system that is not Free and Open
 Souce Software (FOSS).  I am deeply concerned about using a proprietary system
 like GitHub. If you want to contribute I encourage you to do so through the
