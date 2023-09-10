@@ -5,44 +5,32 @@
  * . execute arbitrary shell commands to manipulate input
  * . dynamically generate field parameters ?
  */
-
-use clap::Parser;
-use std::process;
-
 mod input;
 
+use clap::Parser;
+use input::DEFAULT_SEP_PATTERN;
 
-
-/// # Parsing parameters
-///  . parsing x-args as field parameters (-f1 'x argument')
-///  . detecting number of columns and x-args from positional arguments
 #[derive(Parser)]
+/// colmap - map commands to columns of text input
+///
+/// The colmap command reads text from stdin as columns. Each column is then passed to a command
+/// specified by the user. Commands are mapped to specific columns using positional arguments.
+///
+/// The first command is applied to the first column, the second command to the second column, etc.
 #[command(name="colmap")]
 #[command(author="blob42")]
 #[command(version="0.1")]
-#[command(about = "execute commands on columns")]
 struct Cli {
-
     /// separator character used to split text into columns
-    #[arg(default_value=" ")]
+    #[arg(default_value_t=DEFAULT_SEP_PATTERN.to_owned())]
     #[arg(short, long = "sep")]
-    separator: Option<char>,
-
-    #[arg(long, help="select field 1")]
-    f1: Option<String>,
-    #[arg(long, help="select field 2")]
-    f2: Option<String>,
-    #[arg(long, help="select field 3")]
-    f3: Option<String>,
-    #[arg(long, help="select field 4")]
-    f4: Option<String>,
-    #[arg(long, help="select field 5")]
-    f5: Option<String>,
-    #[arg(long, help="select field 6")]
-    f6: Option<String>,
+    separator: String,
 
     #[arg(short, long, action = clap::ArgAction::Count)]
     debug: u8,
+
+    /// execute CMD each column of input. 0 < N_CMD < NB_COLUMNS
+    commands: Vec<String>
 }
 
 fn main() {
@@ -55,17 +43,17 @@ fn main() {
     //    [ ] execute a command on first text column
     // 4. print resulting concatenated columns
 
-
-    if let None = cli.f1.as_deref() {
-        eprintln!("no field --fX to operate on");
-        process::exit(1);
-    }
+    // if let None = cli.f1.as_deref() {
+    //     eprintln!("no field --fX to operate on");
+    //     process::exit(1);
+    // }
 
     if cli.debug > 0 {
-        println!("{:?}", cli.separator.unwrap());
-        println!("{:?}", cli.f1.unwrap());
+        println!("{:?}", cli.separator);
     }
 
-
+    for c in cli.commands {
+        println!("- {}", c);
+    }
 }
 
