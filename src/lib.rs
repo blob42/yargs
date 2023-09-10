@@ -3,12 +3,18 @@
 
 use regex::Regex;
 use std::result;
+use std::ops::Index;
+use std::slice::SliceIndex;
 
 pub const DEFAULT_SEP_PATTERN: &str = r"[\t]+";
 
 
 type Column = Vec<String>;
-type Columns = Vec<Column>;
+// type Columns = Vec<Column>;
+
+#[derive(Clone, Debug)]
+pub struct Columns(Vec<Column>);
+
 type Result<T> = result::Result<T, String>;
 
 
@@ -56,7 +62,36 @@ pub fn split_columns(text: &str, sep: &str) -> Result<Columns>  {
 
     eprintln!("{:?}", columns);
 
-    Ok(columns)
+    Ok(Columns(columns))
+}
+
+impl Columns {
+
+    //NOTE: is there a way to auto implement what's implemented in the wrapped type self.0 ?
+    fn len(&self) -> usize {
+        self.0.len()
+    }
+}
+
+// build Columns from &str
+impl TryFrom<&str> for Columns {
+    type Error = String;
+
+    fn try_from(value: &str) -> Result<Self> {
+        split_columns(value, DEFAULT_SEP_PATTERN)
+    }
+}
+
+// impl Index to allow indexing in our wrapped Vector
+impl <I> Index<I> for Columns
+where
+    I: SliceIndex<[Column]>,
+{
+    type Output = I::Output;
+
+    fn index(&self, index: I) -> &Self::Output {
+        self.0.index(index)
+    }
 }
 
 #[test]
@@ -98,4 +133,10 @@ fn test_re_split() {
     let fields: Vec<&str> = re.split(text).collect();
     eprintln!("{:?}", fields);
     assert!(false);
+}
+
+#[test]
+fn test_columns_from_str() {
+    let res: Columns = "first column\tsecond column\t\tthird column".try_into().unwrap();
+    assert_eq!(res.len(), 3);
 }

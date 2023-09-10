@@ -5,10 +5,9 @@
  * . execute arbitrary shell commands to manipulate input
  * . dynamically generate field parameters ?
  */
-mod input;
 
 use clap::Parser;
-use input::DEFAULT_SEP_PATTERN;
+use colmap::DEFAULT_SEP_PATTERN;
 
 #[derive(Parser)]
 /// colmap - map commands to columns of text input
@@ -35,13 +34,6 @@ struct Cli {
 
 fn main() {
     let cli = Cli::parse();
-
-    // 1. parse cli parameters
-    // 2. read from stdin
-    // 3. split stdin into columns (column/awk commands)
-    // 3. execute every field command on it's corresponding column
-    //    [ ] execute a command on first text column
-    // 4. print resulting concatenated columns
 
     // if let None = cli.f1.as_deref() {
     //     eprintln!("no field --fX to operate on");
