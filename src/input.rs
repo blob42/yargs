@@ -67,7 +67,7 @@ file2.pdf\t\ttitle2
 file3\t\t\ttitle3
 file with space \textra
         ";
-    let columns = split_columns(coltext1, DEFAULT_SEP);
+    let columns = split_columns(coltext1, DEFAULT_SEP_PATTERN);
 
     // should have two columns
     assert_eq!(2, columns.clone().unwrap().len());
@@ -88,7 +88,7 @@ file2.pdf\t\ttitle2
 file3\t\t\ttitle3
 file with space\ttitle 4\textra
         ";
-   split_columns(coltext1, DEFAULT_SEP).unwrap();
+   split_columns(coltext1, DEFAULT_SEP_PATTERN).unwrap();
 }
 
 // #[test]
