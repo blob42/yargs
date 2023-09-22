@@ -25,6 +25,12 @@ foo_cmd | yargs -f1 'basename {}' -f2 'awk { print $1 }'
 foo_cmd | yargs 'basename {}' 'awk { print $2 }'
 ```
 
+3. skipping fields
+```shell
+foo_cmd | yargs 'basename {}' - 'awk { print $2 }'
+# keeps the second field unchanged
+```
+
 ## Example
 
 input:

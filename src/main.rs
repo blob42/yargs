@@ -6,8 +6,13 @@
  * . dynamically generate field parameters ?
  */
 
-use clap::Parser;
-use yargs::parsing::DEFAULT_SEP_PATTERN;
+#![allow(unused_imports)]
+use clap::{Parser,CommandFactory};
+use clap::error::ErrorKind;
+use yargs::{DEFAULT_SEP_PATTERN, split_columns, input};
+use anyhow::Result;
+use std::io::{BufRead, Read, BufReader, stdin};
+
 
 #[derive(Parser)]
 /// yargs - map commands to columns of text input
@@ -18,23 +23,28 @@ use yargs::parsing::DEFAULT_SEP_PATTERN;
 /// arguments.
 ///
 /// The first command is applied to the first column, the second command to the second column, etc.
+#[derive(Debug)]
 #[command(name="yargs")]
 #[command(author="blob42")]
 #[command(version="0.1")]
 struct Cli {
     /// separator character used to split text into columns
-    #[arg(default_value_t=DEFAULT_SEP_PATTERN.to_owned())]
+    #[arg(default_value=DEFAULT_SEP_PATTERN)]
     #[arg(short)]
-    delimiter: String,
+    delimiter: Option<String>,
+
+    //TODO:
+    // -f --field
+    // skip fields with `-`
 
     #[arg(short, long, action = clap::ArgAction::Count)]
-    debug: u8,
+    verbose: u8,
 
     /// execute CMD each column of input. 0 < N_CMD < NB_COLUMNS
-    commands: Vec<String>
+    yargs: Vec<String>
 }
 
-fn main() {
+fn main() -> Result<()> {
     let cli = Cli::parse();
 
     // if let None = cli.f1.as_deref() {
@@ -42,12 +52,50 @@ fn main() {
     //     process::exit(1);
     // }
 
-    if cli.debug > 0 {
-        println!("{:?}", cli.delimiter);
+    if cli.verbose > 0 {
+        println!("{:?}", cli);
+
+        for cmd in &cli.yargs {
+            println!("- {}", cmd);
+        }
     }
 
-    for c in cli.commands {
-        println!("- {}", c);
+
+    // input validation
+    // take input text, split_columns, nb yargs <= nb columns
+    // Validate that the number of positional args <= nb of text columns
+    // ex: input: hello foo bar
+    // --
+    // possible ways to call the app:
+    // $ echo 'hello foo bar' | yargs cat rev 'tr -d b'
+    // $ echo 'hello foo bar' | yargs cat rev
+    // $ echo 'hello foo bar' | yargs cat
+    // let mut cmd = Cli::command();
+
+    // Read commands as positional args
+
+    // Read input from stdin
+    let raw_input = input::read_stdin()?;
+    let input_text = yargs::InputText::new(&raw_input, yargs::DEFAULT_SEP_PATTERN);
+
+    // Check that n args <= input cols
+    if cli.yargs.len() > input_text.n_cols()? {
+        panic!("too many arguments");
     }
+    // assert_eq!(input_text.n_cols()?, cli.yargs.len());
+    
+
+
+
+    print!("{}", raw_input);
+
+
+
+
+    //
+    // cmd.error(ErrorKind::ValueValidation, "invalid")
+    //     .exit()
+    // validate number of 
+    Ok(())
 }
 
