@@ -8,19 +8,23 @@ use std::fs::read_to_string;
 
 type TestResult = Result<(), Box<dyn Error>>;
 
+// empty stdin should return an empty line
 #[test]
 fn pass(){
     let mut cmd = Command::cargo_bin("yargs").unwrap();
-    cmd.assert().success();
+    let assert = cmd
+        .write_stdin("")
+        .assert();
+    assert.stdout("");
 }
 
 
 
+#[test]
 // input with many columns
 // no positional arguments
 // behaves like cat
-#[test]
-fn pass_noargs() -> TestResult {
+fn pass_columns_no_args() -> TestResult {
     let input = Path::new("tests/inputs/input1");
 
     let mut cmd = Command::cargo_bin("yargs").unwrap();
@@ -30,4 +34,21 @@ fn pass_noargs() -> TestResult {
     assert.stdout(read_to_string(input)?);
     Ok(())
 }
+
+
+#[test]
+// should if more yargs provided than detected columns
+fn fail_yargs_mismatch1() -> TestResult {
+    let input = Path::new("tests/inputs/input1");
+
+    let mut cmd = Command::cargo_bin("yargs").unwrap();
+
+    let assert = cmd
+        .args(&["one", "two"])
+        .pipe_stdin(input)?
+        .assert();
+    assert.failure();
+    Ok(())
+}
+
 

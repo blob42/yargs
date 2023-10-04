@@ -9,9 +9,11 @@
 #![allow(unused_imports)]
 use clap::{Parser,CommandFactory};
 use clap::error::ErrorKind;
-use yargs::{DEFAULT_SEP_PATTERN, split_columns, input};
+use yargs::{DEFAULT_SEP_PATTERN, stdin};
+use yargs::parse::InputText;
 use anyhow::Result;
 use std::io::{BufRead, Read, BufReader, stdin};
+use std::process;
 
 
 #[derive(Parser)]
@@ -28,10 +30,10 @@ use std::io::{BufRead, Read, BufReader, stdin};
 #[command(author="blob42")]
 #[command(version="0.1")]
 struct Cli {
-    /// separator character used to split text into columns
+    /// Regex used to  to split input into columns
     #[arg(default_value=DEFAULT_SEP_PATTERN)]
     #[arg(short)]
-    delimiter: Option<String>,
+    delimiter: String,
 
     //TODO:
     // -f --field
@@ -52,8 +54,10 @@ fn main() -> Result<()> {
     //     process::exit(1);
     // }
 
+
     if cli.verbose > 0 {
-        println!("{:?}", cli);
+        eprintln!("======\nDEBUG:\n");
+        eprintln!("{:?}", cli);
 
         for cmd in &cli.yargs {
             println!("- {}", cmd);
@@ -75,18 +79,35 @@ fn main() -> Result<()> {
     // Read commands as positional args
 
     // Read input from stdin
-    let raw_input = input::read_stdin()?;
-    let input_text = yargs::InputText::new(&raw_input, yargs::DEFAULT_SEP_PATTERN);
+    let raw_input = stdin::read_stdin()?;
+    let input_text = InputText::new(&raw_input, &cli.delimiter);
+
+    let n_cols = match input_text.n_cols() {
+        Err(e) => {
+            eprintln!("error parsing input: {}", e);
+            process::exit(1)
+        },
+        Ok(n) => n,
+    };
 
     // Check that n args <= input cols
     if cli.yargs.len() > input_text.n_cols()? {
-        panic!("too many arguments");
+        // panic!("too many arguments");
+        eprint!("too many arguments for delimiter={:?}", input_text.sep);
+        process::exit(1);
     }
-    // assert_eq!(input_text.n_cols()?, cli.yargs.len());
+
+    if cli.verbose > 0 {
+        eprintln!("detected {n_cols} colunms");
+        eprintln!("======");
+    }
+
+    assert!(input_text.n_cols()? >= cli.yargs.len());
     
 
 
 
+    // TODO: RESULT
     print!("{}", raw_input);
 
 

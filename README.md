@@ -1,5 +1,4 @@
-Very much work in progress. This is the first project in my Rust learning journey. 
-Expect a lot of changes and refactoring.
+WIP pet project.
 
 # yargs
 
@@ -8,7 +7,7 @@ the its ability to work on columns of text and allows for arbitrary
 commands to be applied per column in a similar way to `xargs`.
 
 The columns are called `fields`. The command to execute on each field is called
-an `x-arg`. 
+an `y-arg`. 
 
 # Usage
 
@@ -40,7 +39,7 @@ input:
     /long/path/to/some/ebook.pdf   | Title Of Ebook
                                      ____
                                        |
-    example usage:                     | x:arg
+    example usage:                     | y-arg
     --------------                     |                     
                           ----------------                       
     yargs 'basename {}' "awk { print $1 }"
