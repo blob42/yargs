@@ -1,5 +1,3 @@
-//TODO:
-
 use std::error::Error;
 use assert_cmd::Command;
 // use assert_cmd::prelude::*;
@@ -52,3 +50,15 @@ fn fail_yargs_mismatch1() -> TestResult {
 }
 
 
+// n args <= n cols
+#[test]
+fn cli_pass2() -> TestResult {
+    run_args("tests/inputs/input1", &["1", "2", "3", "4", "5", "6"])
+}
+
+#[test]
+#[should_panic]
+// more arguments passed than columns
+fn cli_fail1()  {
+    run_args("tests/inputs/input1", &["1", "2", "3", "4", "5", "6", "7", "8"]).unwrap()
+}

@@ -104,19 +104,9 @@ fn main() -> Result<()> {
 
     assert!(input_text.n_cols()? >= cli.yargs.len());
     
-
-
-
     // TODO: RESULT
     print!("{}", raw_input);
 
 
-
-
-    //
-    // cmd.error(ErrorKind::ValueValidation, "invalid")
-    //     .exit()
-    // validate number of 
     Ok(())
 }
-
