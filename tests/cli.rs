@@ -56,7 +56,7 @@ fn fail_yargs_mismatch1() -> TestResult {
     let mut cmd = Command::cargo_bin("yargs").unwrap();
 
     let assert = cmd
-        .args(&["one", "two"])
+        .args(["one", "two"])
         .pipe_stdin(input)?
         .assert();
     assert.failure();
@@ -67,8 +67,8 @@ fn fail_yargs_mismatch1() -> TestResult {
 #[test]
 fn cli_pass2()  {
     let mut cmd = Command::cargo_bin("yargs").unwrap();
-    cmd.args(&["-d", r"\s"])
-    .args(&["1", "2", "3", "4", "5", "6"]);
+    cmd.args(["-d", r"\s"])
+    .args(["1", "2", "3", "4", "5", "6"]);
     run_command("tests/inputs/input1", &mut cmd).unwrap()
         .success();
 }
@@ -79,8 +79,8 @@ fn cli_pass2()  {
 // delimiter: space
 fn cli_fail1() {
     let mut cmd = Command::cargo_bin("yargs").unwrap();
-    cmd.args(&["-d", r"\s"])
-    .args(&["1", "2", "3", "4", "5", "6", "7", "8"]);
+    cmd.args(["-d", r"\s"])
+    .args(["1", "2", "3", "4", "5", "6", "7", "8"]);
     run_command("tests/inputs/input1", &mut cmd).unwrap()
         .failure();
 }

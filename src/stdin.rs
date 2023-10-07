@@ -6,7 +6,7 @@ use std::io::{BufReader, self, Read};
 // TODO: make as iterator, avoid loading all stdin to memroy
 pub fn read_stdin() -> Result<Box<String>> {
     let mut r = BufReader::new(io::stdin());
-    let mut buf = Box::new(String::new());
+    let mut buf = Box::<String>::default();
     r.read_to_string(&mut buf)?;
     Ok(buf)
 }

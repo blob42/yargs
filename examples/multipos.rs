@@ -40,7 +40,7 @@ fn main() {
         0 => println!("Debug mode is off"),
         1 => println!("Debug mode is kind of on"),
         2 => println!("Debug mode is on"),
-        3 | 4 | 5 => println!("too much dude !"),
+        3 ..= 5 => println!("too much dude !"),
         _ => println!("Don't be crazy"),
     }
 

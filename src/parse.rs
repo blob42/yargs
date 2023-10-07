@@ -1,4 +1,3 @@
-
 use super::{Columns, Column};
 use anyhow::{anyhow, Result};
 use regex::Regex;
@@ -23,7 +22,7 @@ impl<'a> InputText<'a> {
 
     pub fn new(raw: &'a str, sep: &str) -> Self {
        InputText {
-           raw: raw.into(),
+           raw,
            sep: sep.into()
        } 
     }
@@ -45,6 +44,10 @@ impl<'a> InputText<'a> {
     pub fn len(self) -> usize {
         self.raw.len()
     }
+
+    pub fn is_empty(self) -> bool {
+        self.raw.is_empty()
+    }
 }
 
 /// Return the number of columns given input text and a separator
@@ -58,7 +61,7 @@ pub fn n_columns(text: &str, sep: &str) -> Result<usize> {
     // count number of columns
     match lines.first() {
         Some(line) => Ok(re.split(line).count()),
-        None => return Err(anyhow!("no lines left")),
+        None => Err(anyhow!("no lines left")),
     }
 }
 
@@ -98,7 +101,6 @@ pub fn split_columns(text: &str, sep: &str) -> Result<Columns> {
 mod tests {
     use super::*;
     use crate::DEFAULT_SEP_PATTERN;
-    use regex::Regex;
     use std::error::Error;
 
     type TestResult = Result<(), Box<dyn Error>>;
@@ -136,13 +138,13 @@ file with space\ttitle 4\textra
     }
 
     // #[test]
-    fn test_re_split() {
-        let text = "this is		two tabs";
-        let re = Regex::new(r"[\t]+").unwrap();
-        let fields: Vec<&str> = re.split(text).collect();
-        eprintln!("{:?}", fields);
-        assert!(false);
-    }
+    // fn test_re_split() {
+    //     let text = "this is		two tabs";
+    //     let re = Regex::new(r"[\t]+").unwrap();
+    //     let fields: Vec<&str> = re.split(text).collect();
+    //     eprintln!("{:?}", fields);
+    //     assert!(false);
+    // }
 
     #[test]
     fn test_columns_from_str() {
