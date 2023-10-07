@@ -13,7 +13,7 @@ use yargs::{DEFAULT_SEP_PATTERN, stdin};
 use yargs::parse::InputText;
 use anyhow::Result;
 use std::io::{BufRead, Read, BufReader, stdin};
-use std::process;
+use std::process::{self, Command, Stdio};
 
 
 #[derive(Parser)]
@@ -102,10 +102,21 @@ fn main() -> Result<()> {
         eprintln!("======");
     }
 
-    assert!(input_text.n_cols()? >= cli.yargs.len());
-    
     // TODO: RESULT
-    print!("{}", raw_input);
+    if cli.yargs.is_empty() {
+        print!("{}", raw_input);
+    } else {
+        // Handle yargs
+        // Exec each yarg as a process for each column
+        // yarg #1 for column 1, yarg #2 -> col 2 ... 
+
+        // we know we have at least one elm
+        let yarg = cli.yargs.first().unwrap();
+        let yarg_cmd = Command::new(yarg)
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect(&format!("Failed to exec {yarg}"));
+    }
 
 
     Ok(())
