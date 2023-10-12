@@ -12,7 +12,7 @@ use clap::error::ErrorKind;
 use yargs::{DEFAULT_SEP_PATTERN, stdin};
 use yargs::parse::InputText;
 use anyhow::Result;
-use std::io::{BufRead, Read, BufReader, stdin};
+use std::io::{BufRead, Read, BufReader, stdin, Write};
 use std::process::{self, Command, Stdio};
 
 
@@ -102,20 +102,35 @@ fn main() -> Result<()> {
         eprintln!("======");
     }
 
+    let columns = input_text.split()?;
+
     // TODO: RESULT
     if cli.yargs.is_empty() {
         print!("{}", raw_input);
     } else {
         // Handle yargs
-        // Exec each yarg as a process for each column
-        // yarg #1 for column 1, yarg #2 -> col 2 ... 
+        // For each columns of text, execute the arg command on 
+        // the columns lines (xargs)
 
         // we know we have at least one elm
         let yarg = cli.yargs.first().unwrap();
-        let yarg_cmd = Command::new(yarg)
-            .stdout(Stdio::piped())
+        // execute the child process (yarg) using the 
+        // piped input
+
+        // EXAMPLE: using thread to spawn the processes
+        // std::thread::spawn(move || {
+        //     stdin.write_all("Hello, world!".as_bytes()).expect("Failed to write to stdin");
+        // });
+        let mut yarg_cmd = Command::new(yarg)
+            .stdin(Stdio::piped())
             .spawn()
             .expect(&format!("Failed to exec {yarg}"));
+
+        let mut yarg_stdin = yarg_cmd.stdin.take().expect("failed to open stdin");
+        yarg_stdin.write_all(columns[5].join("\n").as_bytes())?;
+
+
+        // println!("{}", String::from_utf8(output.stdout).unwrap());
     }
 
 

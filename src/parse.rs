@@ -48,6 +48,10 @@ impl<'a> InputText<'a> {
     pub fn is_empty(self) -> bool {
         self.raw.is_empty()
     }
+
+    pub fn split(self) -> Result<Columns> {
+        split_columns(self.raw, &self.sep)
+    }
 }
 
 /// Return the number of columns given input text and a separator
@@ -92,7 +96,7 @@ pub fn split_columns(text: &str, sep: &str) -> Result<Columns> {
         }
     }
 
-    eprintln!("{:?}", columns);
+    // eprintln!("{:?}", columns);
 
     Ok(Columns(columns))
 }
