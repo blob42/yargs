@@ -22,7 +22,7 @@ fn run_command(test_file: &str, cmd: &mut Command) -> AssertResult
 
 // empty stdin should return an empty line
 #[test]
-fn pass(){
+fn no_stdin_no_args(){
     let mut cmd = Command::cargo_bin("yargs").unwrap();
     let assert = cmd
         .write_stdin("")
@@ -30,13 +30,11 @@ fn pass(){
     assert.stdout("");
 }
 
-
-
-#[test]
 // input with many columns
 // no positional arguments
 // behaves like cat
-fn pass_columns_no_args() -> TestResult {
+#[test]
+fn stdin_no_args() -> TestResult {
     let input = Path::new("tests/inputs/input1");
 
     let mut cmd = Command::cargo_bin("yargs").unwrap();
@@ -48,39 +46,38 @@ fn pass_columns_no_args() -> TestResult {
 }
 
 
-#[test]
-// should if more yargs provided than detected columns
-fn fail_yargs_mismatch1() -> TestResult {
-    let input = Path::new("tests/inputs/input1");
-
-    let mut cmd = Command::cargo_bin("yargs").unwrap();
-
-    let assert = cmd
-        .args(["one", "two"])
-        .pipe_stdin(input)?
-        .assert();
-    assert.failure();
-    Ok(())
-}
-
 // n args <= n cols
 #[test]
 fn cli_pass2()  {
     let mut cmd = Command::cargo_bin("yargs").unwrap();
-    cmd.args(["-d", r"\s"])
-    .args(["1", "2", "3", "4", "5", "6"]);
+    cmd.args(["-d", r"\s+"])
+    .args(vec!["true"; 6]);
     run_command("tests/inputs/input1", &mut cmd).unwrap()
         .success();
 }
 
-#[test]
-#[should_panic]
-// more arguments passed than columns
+// should fail if more yargs provided than detected columns
+// the input text has 7 columns, we pass 8 yargs
 // delimiter: space
+#[test]
 fn cli_fail1() {
     let mut cmd = Command::cargo_bin("yargs").unwrap();
-    cmd.args(["-d", r"\s"])
-    .args(["1", "2", "3", "4", "5", "6", "7", "8"]);
+    cmd.args(["-d", r"\s+"])
+    .args(vec!["arg"; 8]);
     run_command("tests/inputs/input1", &mut cmd).unwrap()
         .failure();
+}
+
+// should execute yarg corresponding to column
+// first yarg transforms col to uppercase
+// second yarg reverses the text 
+#[test]
+fn cli_exec_yarg() {
+    let mut cmd = Command::cargo_bin("yargs").unwrap();
+    cmd.args(["-d", r"\s+"])
+    .args(["tr '[:lower:]' '[:upper:]'", "rev"]);
+    run_command("tests/inputs/input2_spaces", &mut cmd).unwrap()
+        .success()
+        .stdout(read_to_string(Path::new("tests/outputs/output2_spaces")).unwrap());
+
 }
