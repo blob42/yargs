@@ -79,6 +79,18 @@ fn cli_exec_yarg() {
     .args(["tr '[:lower:]' '[:upper:]'", "rev"]);
     run_command("tests/inputs/input2_spaces", &mut cmd).unwrap()
         .success()
-        .stdout(predicate::str::diff(read_to_string(Path::new("tests/outputs/output2_spaces")).unwrap()));
+        .stdout(predicate::str::diff(read_to_string(Path::new("tests/outputs/output2_spaces"))
+            .unwrap()));
 
+}
+
+#[test]
+fn cli_exec_awk() {
+    let mut cmd = Command::cargo_bin("yargs").unwrap();
+    cmd.args(["-d", r"\s+"])
+    .args(["tr '[:lower:]' '[:upper:]'", "awk '{ print int($2) + 1'"]);
+    run_command("tests/inputs/input2_spaces", &mut cmd).unwrap()
+        .success()
+        .stdout(predicate::str::diff(read_to_string(Path::new("tests/outputs/output2_awk"))
+            .unwrap()));
 }

@@ -38,8 +38,9 @@ impl Display for Columns {
 
         let nrows = self[0].len();
         let mut i = 0;
-        while i <= nrows-1 {
+        while i < nrows {
             for col in self.deref() {
+                assert!(i < col.len(), "column number mismatch");
                 res.push_str(&format!("{} ", col[i]))
             }
             // remove last space
