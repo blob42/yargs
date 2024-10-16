@@ -13,16 +13,16 @@ use regex::Regex;
 
 #[derive(Debug)]
 pub struct InputText<'a> {
-    raw: &'a str,
+    pub raw: &'a str,
 
     pub sep: String,
 }
 
 impl<'a> InputText<'a> {
 
-    pub fn new(raw: &'a str, sep: &str) -> Self {
+    pub fn new(raw: &'a impl AsRef<str>, sep: &str) -> Self {
        InputText {
-           raw,
+           raw: raw.as_ref(),
            sep: sep.into()
        } 
     }
@@ -49,7 +49,7 @@ impl<'a> InputText<'a> {
         self.raw.is_empty()
     }
 
-    pub fn split(self) -> Result<Columns> {
+    pub fn split(&self) -> Result<Columns> {
         split_columns(self.raw, &self.sep)
     }
 }
