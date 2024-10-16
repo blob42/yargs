@@ -9,13 +9,14 @@ use parse::split_columns;
 pub mod stdin;
 pub mod parse;
 
-// pub const DEFAULT_SEP_PATTERN: &str = r"[\t]+";
 // default separator is one or more consecutive space characters
+//NOTE: to setup a global var for separator ?
 pub const DEFAULT_SEP_PATTERN: &str = r"[\s]+";
 
-//FIX: fix tests for tab separator pattern and default separator pattern
-//
-//NOTE: learn how to setup a global var that will hold the current separator pattern
+// TAB as default separator
+// pub const DEFAULT_SEP_PATTERN: &str = r"[\t]+";
+
+//FIX:? fix tests for tab separator pattern and default separator pattern
 
 
 // pub mod patterns {
