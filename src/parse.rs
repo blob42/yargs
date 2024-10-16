@@ -101,23 +101,26 @@ pub fn split_columns(text: &str, sep: &str) -> Result<Columns> {
     Ok(Columns(columns))
 }
 
+// TODO!: use \s+ as default separator and create new tests for \t
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::DEFAULT_SEP_PATTERN;
-    use std::error::Error;
+
+    use super::*;
+    use std::{error::Error, fmt};
+
 
     type TestResult = Result<(), Box<dyn Error>>;
 
     #[test]
-    fn test_split_columns_default_sep() -> TestResult {
+fn test_split_columns_tab() -> TestResult {
         let coltext1 = "
 file1.txt\t\ttitle1
 file2.pdf\t\ttitle2
 file3\t\t\ttitle3
 file with space \textra
         ";
-        let columns = split_columns(coltext1, DEFAULT_SEP_PATTERN)?;
+        let columns = split_columns(coltext1, "[\t]+")?;
 
         // should have two columns
         assert_eq!(2, columns.clone().len());
@@ -130,13 +133,37 @@ file with space \textra
     }
 
     #[test]
+    fn test_split_columns_default_sep() -> TestResult {
+        let coltext1 = "
+file1.txt title1
+file2.pdf   title2
+file3       title3
+some_file title4
+        ";
+        let columns = split_columns(coltext1, DEFAULT_SEP_PATTERN)?;
+
+        // should have two columns
+        assert_eq!(2, columns.clone().len());
+
+        assert_eq!(
+            vec!["file1.txt", "file2.pdf", "file3", "some_file"],
+            columns[0]
+        );
+        assert_eq!(
+            vec!["title1", "title2", "title3", "title4"],
+            columns[1]
+        );
+        Ok(())
+    }
+
+    #[test]
     #[should_panic]
     fn test_wrong_ncol_default_sep() {
         let coltext1 = "
-file1.txt\t\ttitle1
-file2.pdf\t\ttitle2
-file3\t\t\ttitle3
-file with space\ttitle 4\textra
+file1.txt  title1
+file2.pdf   title2
+file3   title3
+extra space field
         ";
         split_columns(coltext1, DEFAULT_SEP_PATTERN).unwrap();
     }
@@ -151,8 +178,21 @@ file with space\ttitle 4\textra
     // }
 
     #[test]
-    fn test_columns_from_str() {
-        let res: Columns = "first column\tsecond column\t\tthird column"
+    fn test_columns_from_tab() {
+        let res = split_columns("first column\tsecond column\t\tthird column", "[\t]+").unwrap();
+        assert_eq!(res.len(), 3);
+    }
+
+    #[test]
+    fn into_columns() -> TestResult {
+        let t: Vec<Vec<String>> = vec![vec!["1".to_string(), "2".to_string()]];
+        let _cols: Columns = t.try_into()?;
+        Ok(())
+    }
+
+    #[test]
+    fn test_columns_from_default_sep() {
+        let res: Columns = "first second third"
             .try_into()
             .unwrap();
         assert_eq!(res.len(), 3);

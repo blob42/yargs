@@ -9,8 +9,8 @@
 #![allow(unused_imports)]
 use clap::{Parser,CommandFactory};
 use clap::error::ErrorKind;
-use yargs::{DEFAULT_SEP_PATTERN, stdin};
-use yargs::parse::InputText;
+use yargs::{stdin, Columns, Column, DEFAULT_SEP_PATTERN};
+use yargs::parse::{split_columns, InputText};
 use anyhow::Result;
 use std::io::{BufRead, Read, BufReader, stdin, Write};
 use std::os;
@@ -35,6 +35,10 @@ struct Cli {
     #[arg(default_value=DEFAULT_SEP_PATTERN)]
     #[arg(short)]
     delimiter: String,
+
+    /// Run yarg cmd for each row element
+    #[arg(short)]
+    xarg: Option<String>,
 
     //TODO:
     // -f --field
@@ -105,6 +109,9 @@ fn main() -> Result<()> {
 
     let columns = input_text.split()?;
 
+    // output columns with same input shape and capacity
+    let mut out_cols: Vec<Vec<String>> = Vec::with_capacity(columns.len());
+
     // TODO: RESULT
     if cli.yargs.is_empty() {
         print!("{}", raw_input);
@@ -113,9 +120,14 @@ fn main() -> Result<()> {
         // For each columns of text, execute the arg command on 
         // the column lines
 
+
         // naive implementation
         // TODO: map input columns into output processed commands
+        // i is the number of columns
         for (i, yarg) in cli.yargs.into_iter().enumerate() {
+            //out_cols.resize(i+1, vec![]);
+
+            if yarg == "-" { continue;}
 
             // let yarg_cmd = &yarg.split_whitespace().nth(0).unwrap_or(&yarg);
             // dbg!(yarg_cmd);
@@ -138,21 +150,28 @@ fn main() -> Result<()> {
             // expl: using a long `awk ..` will fail if args are split on space the cmd needs to be
             // passed as is to a subshell
             std::thread::spawn(move || {
+                 //dbg!(&_columns[i]);
                 yarg_stdin.write_all(_columns[i].join("\n").as_bytes()).expect("Failed to write to stdin");
             });
 
             // gather output from child
             let output = yarg_cmd.wait_with_output()
                 .expect(format!("failed to read stdout for {}", yarg).as_str());
+            // println!("{}", String::from_utf8_lossy(&output.stdout));
+
+            // output should be a \n separated column of text
+            let out_col : Column = String::from_utf8_lossy(&output.stdout)
+                                            .split("\n")
+                                            .map(|e| String::from(e))
+                                            .collect();
             
 
-            // TODO: gather output into column similar to input print into column format
-            println!("{}", String::from_utf8_lossy(&output.stdout));
-
+            out_cols.insert(i, out_col);
         }
 
+        let out_cols: Columns = out_cols.try_into()?;
 
-
+        println!("{}", out_cols);
         process::exit(0);
 
         // we know we have at least one elm

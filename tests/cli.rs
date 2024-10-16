@@ -1,6 +1,7 @@
 use std::error::Error;
 use assert_cmd::Command;
 use assert_cmd::assert::Assert;
+use predicates::prelude::predicate;
 // use assert_cmd::prelude::*;
 use std::path::Path;
 use std::fs::read_to_string;
@@ -78,6 +79,6 @@ fn cli_exec_yarg() {
     .args(["tr '[:lower:]' '[:upper:]'", "rev"]);
     run_command("tests/inputs/input2_spaces", &mut cmd).unwrap()
         .success()
-        .stdout(read_to_string(Path::new("tests/outputs/output2_spaces")).unwrap());
+        .stdout(predicate::str::diff(read_to_string(Path::new("tests/outputs/output2_spaces")).unwrap()));
 
 }
