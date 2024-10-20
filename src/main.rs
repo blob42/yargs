@@ -40,7 +40,7 @@ struct Cli {
     #[arg(short)]
     xarg: Option<String>,
 
-    //TODO:
+    //TODO: specify fields as parameters
     // -f --field
     // skip fields with `-`
     #[arg(short, long, action = clap::ArgAction::Count)]
